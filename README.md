@@ -84,3 +84,17 @@ src/main/java/uceva/cleanarchitecture/infrastructure/repository/
 src/main/java/uceva/cleanarchitecture/config/
 └── AppConfig.java
 ```
+
+# Funcionamiento del Backend
+
+## Urls Consumo
+```
+http://localhost:8080
+http://localhost:8080/api/users/{countUsers}
+http://localhost:8080/api/products/{countProducts}
+```
+
+## Url Swagger Docs
+```
+http://localhost:3000/api/swagger-ui/index.html
+```

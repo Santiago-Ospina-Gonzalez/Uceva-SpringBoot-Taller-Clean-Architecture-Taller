@@ -1,4 +1,4 @@
-# Clean Architecture en Angular
+# Clean Architecture en SpringBoot
 
 ```
 src/main/java/uceva/cleanarchitecture

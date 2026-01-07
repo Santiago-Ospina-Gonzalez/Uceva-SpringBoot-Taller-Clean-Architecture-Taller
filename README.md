@@ -89,12 +89,7 @@ src/main/java/uceva/cleanarchitecture/config/
 
 ## Urls Consumo
 ```
-http://localhost:8080
+http://localhost:3000/api/swagger-ui/index.html
 http://localhost:8080/api/users/{countUsers}
 http://localhost:8080/api/products/{countProducts}
-```
-
-## Url Swagger Docs
-```
-http://localhost:3000/api/swagger-ui/index.html
 ```

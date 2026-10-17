@@ -1,95 +1,36 @@
-# Clean Architecture en SpringBoot
+# Clean Architecture en Spring Boot
 
-```
-src/main/java/uceva/cleanarchitecture
-│
-├── domain
-│   ├── entity/
-│   │   ├── User.java
-│   │   └── Product.java
-│   │
-│   └── repository/
-│       ├── UserRepository.java
-│       └── ProductRepository.java
-│
-├── application
-│   └── usecase/
-│       ├── GetAllUsersUseCase.java
-│       └── GetAllProductsUseCase.java
-│
-├── infrastructure
-│   ├── controller/
-│   │   ├── UserController.java
-│   │   └── ProductController.java
-│   │
-│   ├── repository/
-│   │   ├── UserRepositoryImpl.java
-│   │   └── ProductRepositoryImpl.java
-│   │
-│   └── datasource/
-│       ├── UserDatasource.java
-│       └── ProductDatasource.java
-│
-├── config
-│   └── AppConfig.java
-│
-└── UcevaSprinBootTallerCleanArchitectureApplication.java
-```
+Backend Spring Boot del taller. Los datos de ejemplo se generan en memoria con JavaFaker.
 
+## Arquitectura
 
-## Paso 1 - Crear Entidades
+Cada módulo sigue el flujo `controller -> use case -> repository -> datasource`. Las entidades y los contratos de repositorio están en `domain`; los casos de uso, en `application`; y los controladores, implementaciones y fuentes de datos, en `infrastructure`. `config/AppConfig.java` compone las dependencias mediante beans de Spring.
 
-```
-src/main/java/uceva/cleanarchitecture/domain/entity
-├── User.java
-└── Product.java
-```
+Los módulos disponibles son Users, Products, Categories, Orders y Suppliers.
 
-## Paso 2 - Crear Repositorios
+## Requisitos y ejecución
 
-```
-src/main/java/uceva/cleanarchitecture/domain/repositories/
-├── UserRepository.java
-└── ProductRepository.java
-```
+- JDK 25, requerido por el toolchain definido en `build.gradle`.
+- Windows: `./gradlew.bat bootRun` desde PowerShell.
+- Linux/macOS: `./gradlew bootRun`.
 
-## Paso 3 - Crear Casos de Uso
+La aplicación escucha en el puerto `8080` y utiliza `/api` como context path.
 
-```
-src/main/java/uceva/cleanarchitecture/application/usecase/
-├── GetAllUsersUseCase.java
-└── GetAllProductsUseCase.java
-```
+## API
 
-## Paso 4 - Crear Controllers
+Todas las rutas son `GET`, reciben la cantidad de registros como entero en la ruta y responden con una lista JSON. Por ejemplo, `GET /api/users/5` devuelve cinco usuarios.
 
+| Ruta | Campos de respuesta |
+|---|---|
+| `/api/users/{countUsers}` | `id`, `name`, `lastName`, `age`, `email`, `engineering` |
+| `/api/products/{countProducts}` | `id`, `name`, `category`, `price` |
+| `/api/categories/{countCategories}` | `id`, `name`, `description` |
+| `/api/orders/{countOrders}` | `id`, `customer`, `total`, `status` (`Pendiente`, `Enviado`, `Entregado`) |
+| `/api/suppliers/{countSuppliers}` | `id`, `name`, `email`, `phone` |
 
-```
-src/main/java/uceva/cleanarchitecture/infrastructure/controllers/
-├── UserController.java
-└── ProductController.java
-```
+Swagger UI: `http://localhost:8080/api/swagger-ui.html`
+OpenAPI JSON: `http://localhost:8080/api/v3/api-docs`
 
-## Paso 5 - Crear Repositorios Implementadores
+## Pruebas
 
-```
-src/main/java/uceva/cleanarchitecture/infrastructure/repository/
-├── UserRepositoryImpl.java
-└── ProductRepositoryImpl.java
-```
-
-## Paso 6 - Agregar la Inyección de Dependencias
-
-```
-src/main/java/uceva/cleanarchitecture/config/
-└── AppConfig.java
-```
-
-# Funcionamiento del Backend
-
-## Urls Consumo
-```
-http://localhost:3000/api/swagger-ui/index.html
-http://localhost:8080/api/users/{countUsers}
-http://localhost:8080/api/products/{countProducts}
-```
+En Windows, ejecutar `./gradlew.bat test` desde PowerShell; en Linux/macOS, ejecutar `./gradlew test`.

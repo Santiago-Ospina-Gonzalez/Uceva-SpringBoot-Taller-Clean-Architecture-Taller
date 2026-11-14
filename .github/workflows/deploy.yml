@@ -1,0 +1,79 @@
+name: Publicar documentación Spring Boot en GitHub Pages
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+
+      - name: Preparar Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Ejecutar pruebas
+        run: ./gradlew test
+
+      - name: Construir aplicación
+        run: ./gradlew build
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Preparar página de documentación
+        run: |
+          mkdir -p pages
+          cat > pages/index.html <<'EOF'
+          <!doctype html>
+          <html lang="es">
+            <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Uceva SpringBoot</title></head>
+            <body>
+              <main>
+                <h1>Uceva SpringBoot - Clean Architecture</h1>
+                <p>Backend REST desarrollado con Spring Boot y arquitectura limpia.</p>
+                <h2>Módulos</h2>
+                <p>Users, Products, Categories, Orders y Suppliers.</p>
+                <p>El backend se ejecuta localmente en el puerto 8080. Esta página documenta el proyecto porque GitHub Pages no ejecuta aplicaciones Java.</p>
+                <a href="https://github.com/Santiago-Ospina-Gonzalez/Uceva-SpringBoot-Taller-Clean-Architecture-Taller">Ver repositorio</a>
+              </main>
+            </body>
+          </html>
+          EOF
+
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./pages
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Desplegar documentación
+        id: deployment
+        uses: actions/deploy-pages@v4
